@@ -15,8 +15,10 @@ declare global {
     interface Window {
         LiveSearchAutocomplete: typeof import("../LiveSearchAutocomplete").default;
         magentoStorefrontEvents: MagentoStorefrontEvents;
+        adobeDataLayer: any;
     }
 
     const API_URL: string;
+    const TEST_URL: string;
     const REACT_APP: boolean;
 }

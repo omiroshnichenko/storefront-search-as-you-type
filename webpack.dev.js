@@ -21,7 +21,10 @@ const devConfig = merge(commonConfig, {
             filename: "index.html",
         }),
         new webpack.DefinePlugin({
-            API_URL: JSON.stringify("https://commerce.adobe.io/search/graphql"),
+            API_URL: JSON.stringify("https://catalog-service.adobe.io/graphql"),
+            TEST_URL: JSON.stringify(
+                "https://catalog-service-sandbox.adobe.io/graphql",
+            ),
         }),
         new ForkTsCheckerWebpackPlugin(),
     ],

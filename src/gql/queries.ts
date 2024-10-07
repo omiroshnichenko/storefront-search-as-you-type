@@ -28,6 +28,9 @@ const QUICK_SEARCH_QUERY = `
         ){
             items {
                 ...Product
+                productView {
+                    urlKey
+                }
             }
             page_info {
                 current_page

@@ -90,10 +90,12 @@ const Popover: FC<PopoverProps> = ({
     };
 
     const onSuggestionClick = (suggestion: string): void => {
-        window.magentoStorefrontEvents?.publish.searchSuggestionClick(
-            searchUnitId,
-            suggestion,
-        );
+        window.adobeDataLayer.push((dl: any) => {
+            dl.push({
+                event: "search-suggestion-click",
+                eventInfo: { ...dl.getState(), searchUnitId, suggestion },
+            });
+        });
 
         updateAndSubmit(suggestion);
     };
@@ -241,10 +243,16 @@ const ProductItem: FC<{
     route?: RedirectRouteFunc;
 }> = ({ product, updateAndSubmit, currencySymbol, currencyRate, route }) => {
     const onProductClick = () => {
-        window.magentoStorefrontEvents?.publish.searchProductClick(
-            searchUnitId,
-            product.product.sku,
-        );
+        window.adobeDataLayer.push((dl: any) => {
+            dl.push({
+                event: "search-product-click",
+                eventInfo: {
+                    ...dl.getState(),
+                    searchUnitId,
+                    sku: product.product.sku,
+                },
+            });
+        });
 
         if (!route && !product.product.canonical_url) {
             // If there's no URL on the product, populate the search bar with name and submit
@@ -254,7 +262,10 @@ const ProductItem: FC<{
 
     const productImage = getProductImageURL(product);
     const productUrl = route
-        ? route({ sku: product.product.sku })
+        ? route({
+              urlKey: product.productView.urlKey,
+              sku: product.product.sku,
+          })
         : product.product.canonical_url;
 
     return (

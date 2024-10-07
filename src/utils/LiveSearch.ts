@@ -22,6 +22,7 @@ import { getUserViewHistory } from "./getUserViewHistory";
 
 export interface StoreDetailsProps {
     environmentId: string;
+    environmentType: string;
     websiteCode: string;
     storeCode: string;
     storeViewCode: string;
@@ -29,6 +30,7 @@ export interface StoreDetailsProps {
     config: StoreDetailsConfig;
     context?: QueryContextInput;
     apiUrl?: string;
+    apiKey: string;
     route?: RedirectRouteFunc;
     searchRoute?: {
         route: string;
@@ -46,7 +48,7 @@ interface StoreDetailsConfig {
     pageSize?: number;
     currencySymbol?: string;
     currencyRate?: string;
-    displayOutOfStock?: string | boolean; 
+    displayOutOfStock?: string | boolean;
 }
 
 const getHeaders = (headers: MagentoHeaders) => {
@@ -74,6 +76,7 @@ class LiveSearch {
 
     constructor({
         environmentId,
+        environmentType,
         websiteCode,
         storeCode,
         storeViewCode,
@@ -81,17 +84,22 @@ class LiveSearch {
         config,
         context,
         apiUrl,
+        apiKey,
     }: StoreDetailsProps) {
         this.minQueryLength = config?.minQueryLength ?? 3;
         this.pageSize = Number(config?.pageSize) ? Number(config?.pageSize) : 6;
         this.currencySymbol = config?.currencySymbol ?? "";
         this.currencyRate = config?.currencyRate ?? "1";
         this.displayInStockOnly =
-            config?.displayOutOfStock === ("1" || true) ? false : true; 
+            config?.displayOutOfStock === ("1" || true) ? false : true;
         this.searchUnitId = searchUnitId;
         this.context = context || { customerGroup: "" };
         this.context.userViewHistory = getUserViewHistory() || [];
-        this.apiUrl = apiUrl ?? API_URL;
+        this.apiUrl = apiUrl
+            ? apiUrl
+            : environmentType?.toLowerCase() === "testing"
+            ? TEST_URL
+            : API_URL;
 
         if (!environmentId || !websiteCode || !storeCode || !storeViewCode) {
             throw new Error("Store details not found.");
@@ -102,7 +110,7 @@ class LiveSearch {
             websiteCode: websiteCode,
             storeCode: storeCode,
             storeViewCode: storeViewCode,
-            apiKey: "search_gql",
+            apiKey,
             contentType: "application/json",
             apiUrl: this.apiUrl,
         };
@@ -138,16 +146,22 @@ class LiveSearch {
             this.pageSize,
         );
 
-        window.magentoStorefrontEvents?.publish.searchRequestSent(
-            this.searchUnitId,
-        );
+        window.adobeDataLayer.push((dl: any) => {
+            dl.push({
+                event: "search-request-sent",
+                eventInfo: {
+                    ...dl.getState(),
+                    searchUnitId: this.searchUnitId,
+                },
+            });
+        });
         // ======  end of data collection =====
         const headers = getHeaders({
             environmentId: this.search.environmentId,
             websiteCode: this.search.websiteCode,
             storeCode: this.search.storeCode,
             storeViewCode: this.search.storeViewCode,
-            apiKey: "search_gql",
+            apiKey: this.search.apiKey,
             contentType: "application/json",
             xRequestId: searchRequestId,
         });
@@ -177,13 +191,25 @@ class LiveSearch {
             results?.data?.productSearch,
         );
 
-        window.magentoStorefrontEvents?.publish.searchResponseReceived(
-            this.searchUnitId,
-        );
+        window.adobeDataLayer.push((dl: any) => {
+            dl.push({
+                event: "search-response-received",
+                eventInfo: {
+                    ...dl.getState(),
+                    searchUnitId: this.searchUnitId,
+                },
+            });
+        });
 
-        window.magentoStorefrontEvents?.publish.searchResultsView(
-            this.searchUnitId,
-        );
+        window.adobeDataLayer.push((dl: any) => {
+            dl.push({
+                event: "search-results-view",
+                eventInfo: {
+                    ...dl.getState(),
+                    searchUnitId: this.searchUnitId,
+                },
+            });
+        });
         // ======  end of data collection =====
 
         return results;

@@ -24,7 +24,7 @@ export interface ClientProps {
     websiteCode: string;
     storeCode: string;
     storeViewCode: string;
-    apiKey?: string;
+    apiKey: string;
     contentType?: string;
     xRequestId?: string;
 }
@@ -160,6 +160,9 @@ export interface Product {
         media_gallery: null | Media;
         custom_attributes: null | CustomAttribute;
         add_to_cart_allowed: null | boolean;
+    };
+    productView: {
+        urlKey: string;
     };
     highlights: Array<Highlights>;
 }

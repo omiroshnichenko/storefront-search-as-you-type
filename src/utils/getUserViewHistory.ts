@@ -8,7 +8,6 @@ it.
 */
 export type UserViewHistory = { sku: string; dateTime: string };
 
-
 const getUserViewHistory = (): UserViewHistory[] => {
     const userViewHistory: { sku: string; date: string }[] | null =
         localStorage.getItem("ds-view-history-time-decay")

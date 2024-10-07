@@ -49,15 +49,6 @@ const mockResultsRef = (useRef as jest.MockedFunction<any>).mockReturnValueOnce(
     { current: document.getElementById(selectors.results) },
 );
 
-Object.defineProperty(window, "magentoStorefrontEvents", {
-    value: {
-        publish: {
-            searchProductClick: jest.fn(),
-            searchSuggestionClick: jest.fn(),
-        },
-    },
-});
-
 /** the suggestions element is currently not used */
 // eslint-disable-next-line jest/no-commented-out-tests
 // test("Popover renders max 5 suggestions", () => {

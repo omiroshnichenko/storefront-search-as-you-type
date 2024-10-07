@@ -13,7 +13,9 @@
         "lint": "eslint .",
         "lint:fix": "eslint --fix .",
         "format": "prettier --check \"./**/*.{ts,tsx,js,css,json,md}\"",
-        "format:fix": "prettier --write  \"./**/*.{ts,tsx,js,css,json,md}\""
+        "format:fix": "prettier --write  \"./**/*.{ts,tsx,js,css,json,md}\"",
+        "test": "jest --passWithNoTests --color --silent",
+        "test:watch": "npm run test -- --watch"
     },
     "devDependencies": {
         "@adobe/magento-storefront-events-sdk": "^1.5.4",
