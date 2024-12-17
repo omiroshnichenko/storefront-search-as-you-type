@@ -10,7 +10,7 @@ it.
 import React, { FC } from "react";
 import {
     getProductImageURL,
-    getProductPrice,
+    getProductPrice, getProductViewPrice,
     htmlStringDecode,
     isMobile,
     searchUnitId,
@@ -206,7 +206,7 @@ const Popover: FC<PopoverProps> = ({
                     if (index < pageSize) {
                         return (
                             <ProductItem
-                                key={product.product.sku}
+                                key={product.productView.sku}
                                 product={product}
                                 updateAndSubmit={updateAndSubmit}
                                 currencySymbol={currencySymbol}
@@ -249,24 +249,24 @@ const ProductItem: FC<{
                 eventInfo: {
                     ...dl.getState(),
                     searchUnitId,
-                    sku: product.product.sku,
+                    sku: product.productView.sku,
                 },
             });
         });
 
-        if (!route && !product.product.canonical_url) {
+        if (!route && !product.productView.url) {
             // If there's no URL on the product, populate the search bar with name and submit
-            updateAndSubmit(product.product.name);
+            updateAndSubmit(product.productView.name);
         }
     };
 
     const productImage = getProductImageURL(product);
     const productUrl = route
         ? route({
-              urlKey: product.productView.urlKey,
-              sku: product.product.sku,
+              urlKey: product.productView.urlKey || '',
+              sku: product.productView.sku,
           })
-        : product.product.canonical_url;
+        : product.productView.url;
 
     return (
         <StyledLink href={productUrl || ""} rel="noopener noreferrer">
@@ -304,11 +304,11 @@ const ProductItem: FC<{
                         customFontWeight={600}
                         className={stylingIds.productName}
                     >
-                        {htmlStringDecode(product.product.name)}
+                        {htmlStringDecode(product.productView.name)}
                     </StyledText>
                 </Grid>
                 <Grid gridArea="price" className={stylingIds.productPrice}>
-                    {getProductPrice(product, currencySymbol, currencyRate)}
+                    {product.product ? getProductPrice(product, currencySymbol, currencyRate) : getProductViewPrice(product, currencySymbol, currencyRate)}
                 </Grid>
             </Grid>
         </StyledLink>

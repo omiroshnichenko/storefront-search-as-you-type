@@ -38,5 +38,35 @@ const getProductPrice = (
         return `${currency}${convertedPrice.toFixed(2)}`;
     }
 };
+const getProductViewPrice = (
+    product: Product,
+    currencySymbol: string,
+    currencyRate: string,
+): string => {
+    let currency = product.productView.priceRange ?
+        product.productView?.priceRange?.minimum?.final?.amount?.currency :
+        product.productView?.price?.final?.amount?.currency;
 
-export { getProductPrice };
+    // if currency symbol is configurable within Commerce, that symbol should is used
+    if (currencySymbol) {
+        currency = currencySymbol;
+    } else {
+        currency = getSymbolFromCurrency(currency) ?? "";
+    }
+
+    const price = product.productView.priceRange ?
+        product.productView?.priceRange?.minimum?.final?.amount?.value :
+        product.productView?.price?.final?.amount?.value;
+
+    const convertedPrice = currencyRate
+        ? price * parseFloat(currencyRate)
+        : price;
+
+    if (!price) {
+        return "";
+    } else {
+        return `${currency}${convertedPrice.toFixed(2)}`;
+    }
+};
+
+export { getProductPrice, getProductViewPrice };

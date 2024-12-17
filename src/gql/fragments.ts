@@ -71,4 +71,83 @@ const Product = `
     }
 `;
 
-export { Product };
+const ProductView = `
+    fragment ProductView on ProductSearchItem {
+        productView {
+            __typename
+            sku
+            name
+            url
+            urlKey
+            images {
+                label
+                url
+                roles
+            }
+            
+            ... on ComplexProductView {
+                priceRange {
+                    maximum {
+                        final {
+                            amount {
+                                value
+                                currency
+                            }
+                        }
+                        regular {
+                            amount {
+                                value
+                                currency
+                            }
+                        }
+                    }
+                    minimum {
+                        final {
+                            amount {
+                                value
+                                currency
+                            }
+                        }
+                        regular {
+                            amount {
+                                value
+                                currency
+                            }
+                        }
+                    }
+                }
+                options {
+                    id
+                    title
+                    values {
+                        title
+                        ... on ProductViewOptionValueSwatch {
+                            id
+                            inStock
+                            type
+                            value
+                        }
+                    }
+                }
+            }
+            ... on SimpleProductView {
+                price {
+                    final {
+                        amount {
+                            value
+                            currency
+                        }
+                    }
+                    regular {
+                        amount {
+                            value
+                            currency
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export { Product, ProductView };

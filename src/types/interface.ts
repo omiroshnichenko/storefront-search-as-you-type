@@ -162,10 +162,44 @@ export interface Product {
         add_to_cart_allowed: null | boolean;
     };
     productView: {
-        urlKey: string;
+        __typename: string;
+        sku: string;
+        name: string;
+        url: null | string;
+        urlKey: null | string;
+        images: null | ProductViewMedia[];
+        price: {
+            final: ProductViewPrice;
+            regular: ProductViewPrice;
+        };
+        priceRange: {
+            minimum: {
+                final: ProductViewPrice;
+                regular: ProductViewPrice;
+            };
+            maximum: {
+                final: ProductViewPrice;
+                regular: ProductViewPrice;
+            };
+        };
     };
     highlights: Array<Highlights>;
 }
+
+export interface ProductViewMedia {
+    url: null | string;
+    label: null | string;
+    position: null | number;
+    disabled: null | boolean;
+    roles: ImageRoles[];
+}
+
+export interface ProductViewPrice {
+    adjustments: null | { amount: number; code: string };
+    amount: Money;
+}
+
+type ImageRoles = 'image' | 'small_image' | 'thumbnail' | 'swatch_image';
 
 export interface ComplexTextValue {
     html: string;

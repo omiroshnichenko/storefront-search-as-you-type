@@ -105,17 +105,15 @@ const createProducts = (
         return [];
     }
 
-    const products: SearchResultProduct[] = items.map((item, index) => ({
-        name: item.product.name,
-        sku: item.product.sku,
+    return items.map((item, index) => ({
+        name: item.productView.name,
+        sku: item.productView.sku,
         // TODO: what is the default value?
-        url: item.product.canonical_url ?? "",
-        imageUrl: item.product.image?.url ?? "",
-        price: item.product.price_range.minimum_price.final_price.value,
+        url: item.productView.url ?? "",
+        imageUrl: item.productView?.images && item.productView.images[0] && item.productView.images[0].url || '',
+        price: item.productView?.price?.final?.amount?.value || item.productView?.priceRange?.minimum?.final?.amount?.value,
         rank: index,
     }));
-
-    return products;
 };
 
 const createSuggestions = (

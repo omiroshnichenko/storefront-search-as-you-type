@@ -15,6 +15,10 @@ it.
 import { Product } from "../types/interface";
 
 const getProductImageURL = (product: Product): string => {
+    if (product.productView) {
+        const item = product.productView;
+        return item.images && item.images.length > 0 &&  item.images[0].url || "";
+    }
     const item = product.product;
 
     let url = null;
